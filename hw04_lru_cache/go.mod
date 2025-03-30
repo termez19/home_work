@@ -1,4 +1,4 @@
-module github.com/termez19/hw04_lru_cache
+module github.com/termez19/home_work/hw04_lru_cache
 
 go 1.23
 

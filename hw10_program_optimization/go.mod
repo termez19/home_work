@@ -1,4 +1,4 @@
-module github.com/termez19/hw10_program_optimization
+module github.com/termez19/home_work/hw10_program_optimization
 
 go 1.23
 
