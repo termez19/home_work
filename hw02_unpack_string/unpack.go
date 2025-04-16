@@ -16,26 +16,14 @@ func Unpack(input string) (string, error) {
 	b := strings.Builder{}
 
 	for _, r := range input {
-		if escape {
-			switch {
-			case unicode.IsDigit(r) || r == '\\':
-				if pending != "" {
-					b.WriteString(pending)
-				}
-				pending = string(r)
-				escape = false
-			default:
-				return "", ErrInvalidString
-
-			}
-		} else {
+		if !escape {
 			switch {
 			case unicode.IsDigit(r):
 				if pending == "" {
 					return "", ErrInvalidString
 				}
-				repeat, _ := strconv.Atoi(string(r))
-				b.WriteString(strings.Repeat(pending, repeat))
+				repeatTimes, _ := strconv.Atoi(string(r))
+				b.WriteString(strings.Repeat(pending, repeatTimes))
 				pending = ""
 			case r == '\\':
 				b.WriteString(pending)
@@ -46,6 +34,12 @@ func Unpack(input string) (string, error) {
 				b.WriteString(pending)
 				pending = string(r)
 			}
+		} else {
+			if !unicode.IsDigit(r) && r != '\\' {
+				return "", ErrInvalidString
+			}
+			pending = string(r)
+			escape = false
 		}
 	}
 	if pending != "" {
