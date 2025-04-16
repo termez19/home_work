@@ -15,12 +15,7 @@ func Unpack(input string) (string, error) {
 	escape := false
 	b := strings.Builder{}
 
-	runes := []rune(input)
-
-	for i, r := range runes {
-		if i == 0 && (unicode.IsDigit(r) && r != '\\') {
-			return "", ErrInvalidString
-		}
+	for _, r := range input {
 		if escape {
 			switch {
 			case unicode.IsDigit(r) || r == '\\':
