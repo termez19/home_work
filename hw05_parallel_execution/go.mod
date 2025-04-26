@@ -1,4 +1,4 @@
-module github.com/termez19/hw05_parallel_execution
+module github.com/termez19/home_work/hw05_parallel_execution
 
 go 1.23
 

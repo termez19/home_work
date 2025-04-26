@@ -1,4 +1,4 @@
-module github.com/termez19/hw02_unpack_string
+module github.com/termez19/home_work/hw02_unpack_string
 
 go 1.23
 

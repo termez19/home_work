@@ -1,4 +1,4 @@
-module github.com/termez19/hw11_telnet_client
+module github.com/termez19/home_work/hw11_telnet_client
 
 go 1.23
 
