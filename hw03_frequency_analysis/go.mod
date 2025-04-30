@@ -1,4 +1,4 @@
-module github.com/termez19/home_work/hw03_frequency_analysis
+module github.com/termez19/home_workhw03_frequency_analysis
 
 go 1.23
 
