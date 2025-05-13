@@ -33,6 +33,7 @@ func (l *list) Len() int {
 func (l *list) Front() *ListItem {
 	return l.front
 }
+
 func (l *list) Back() *ListItem {
 	return l.back
 }

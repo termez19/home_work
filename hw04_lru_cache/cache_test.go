@@ -59,11 +59,10 @@ func TestCache(t *testing.T) {
 
 		c.Clear()
 
-		var lc = c.(*lruCache)
+		lc := c.(*lruCache)
 		require.True(t, len(lc.items) == 0)
 		require.True(t, lc.queue.Len() == 0)
 		require.True(t, lc.capacity == 3)
-
 	})
 	t.Run("getting a place in a place where there is no place", func(t *testing.T) {
 		c := NewCache(3)
@@ -131,9 +130,7 @@ func TestCache(t *testing.T) {
 		require.True(t, isPresent == true)
 		require.True(t, val != nil)
 		require.True(t, val == 400)
-
 	})
-
 }
 
 func TestCacheMultithreading(t *testing.T) {
