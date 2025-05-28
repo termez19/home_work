@@ -68,6 +68,7 @@ func TestRun(t *testing.T) {
 		require.LessOrEqual(t, int64(elapsedTime), int64(sumTime/2), "tasks were run sequentially?")
 	})
 }
+
 func TestRun_MZeroOrNegative_IgnoreErrors(t *testing.T) {
 	tasksCount := 5
 	calls := int32(0)
@@ -86,6 +87,7 @@ func TestRun_MZeroOrNegative_IgnoreErrors(t *testing.T) {
 	require.Equal(t, int32(tasksCount), atomic.LoadInt32(&calls),
 		"должны выполнить все задачи, несмотря на ошибки")
 }
+
 func TestRun_ConcurrencyWithoutSleep(t *testing.T) {
 	var started int32
 	const n = 5
