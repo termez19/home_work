@@ -10,6 +10,7 @@ type (
 type Stage func(in In) (out Out)
 
 func drain(c In) {
+	//nolint
 	for range c {
 	}
 }
