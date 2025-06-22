@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
-
-	pb "github.com/cheggaaa/pb/v3"
 )
 
 var (
@@ -16,11 +15,10 @@ var (
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
-
 	sourceInfo, err := os.Stat(fromPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return fmt.Errorf("source file does not exist: %s", fromPath)
+			return fmt.Errorf("source file %s does not exist: %w", fromPath, err)
 		}
 		return fmt.Errorf("error accessing source file: %w", err)
 	}
@@ -52,7 +50,6 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	destFile, err := os.Create(toPath)
 	if err != nil {
 		return fmt.Errorf("error creating destination file: %w", err)
-
 	}
 	defer destFile.Close()
 
@@ -60,15 +57,53 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil {
 		return fmt.Errorf("error seeking source file: %w", err)
 	}
-	// прогресс бар
-	bar := pb.New64(bytesToCopy)
-	bar.SetRefreshRate(time.Millisecond * 100)
-	bar.Start()
-	reader := bar.NewProxyReader(sourceFile)
-	_, err = io.CopyN(destFile, reader, bytesToCopy)
-	if err != nil {
-		return fmt.Errorf("error copying file: %w", err)
+
+	// simple progress indicator (no external packages)
+	const chunkSize = 1 // 32 * 1024  -  чтобы проверять работу прогресс-бара проще было, в оригинале я 32кб использовал
+	buf := make([]byte, chunkSize)
+	var copied int64
+
+	for copied < bytesToCopy {
+		remaining := bytesToCopy - copied
+		if remaining < int64(len(buf)) {
+			buf = buf[:remaining]
+		}
+
+		n, readErr := sourceFile.Read(buf)
+		if n > 0 {
+			w, writeErr := destFile.Write(buf[:n])
+			if writeErr != nil {
+				return fmt.Errorf("error writing to destination file: %w", writeErr)
+			}
+			copied += int64(w)
+
+			// update progress bar
+			printProgressBar(copied, bytesToCopy, 40)
+		}
+
+		if readErr != nil {
+			if readErr == io.EOF {
+				break
+			}
+			return fmt.Errorf("error reading from source file: %w", readErr)
+		}
+		time.Sleep(time.Millisecond * 30) // тормозит выполнение, но зато прогресс бар красиво наполняется
 	}
-	bar.Finish()
+
+	printProgressBar(bytesToCopy, bytesToCopy, 40)
+	fmt.Println()
 	return nil
+}
+
+func printProgressBar(current, total int64, width int) {
+	if total == 0 {
+		return
+	}
+	ratio := float64(current) / float64(total)
+	filled := int(ratio * float64(width))
+	if filled > width {
+		filled = width
+	}
+	bar := strings.Repeat("█", filled) + strings.Repeat(" ", width-filled)
+	fmt.Printf("\r[%s] %3.0f%%", bar, ratio*100)
 }
