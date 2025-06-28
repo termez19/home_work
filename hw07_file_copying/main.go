@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 )
 
 var (
@@ -18,5 +19,21 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	// Validate required arguments
+	if from == "" || to == "" {
+		fmt.Println("Usage: go run . -from <source> -to <destination> [-offset <bytes>] [-limit <bytes>]")
+		flag.PrintDefaults()
+		return
+	}
+
+	// Call your Copy function
+	err := Copy(from, to, offset, limit)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Copy completed successfully!")
 	// Place your code here.
 }
