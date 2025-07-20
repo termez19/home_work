@@ -58,7 +58,7 @@ func readEnvFile(path string) (EnvValue, error) {
 
 	firstLine := contentScanner.Bytes()
 
-	firstLine = bytes.Replace(firstLine, []byte{0}, []byte{'\n'}, -1)
+	firstLine = bytes.ReplaceAll(firstLine, []byte{0}, []byte{'\n'})
 
 	value := strings.TrimRight(string(firstLine), " \t")
 

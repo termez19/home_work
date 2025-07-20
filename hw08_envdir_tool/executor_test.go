@@ -50,8 +50,8 @@ func TestRunCmd(t *testing.T) {
 	})
 
 	t.Run("environment variable removal", func(t *testing.T) {
-		os.Setenv("TEMP_TEST_VAR", "should_be_removed")
-		defer os.Unsetenv("TEMP_TEST_VAR")
+		_ = os.Setenv("TEMP_TEST_VAR", "should_be_removed")
+		defer func() { _ = os.Unsetenv("TEMP_TEST_VAR") }()
 
 		env := Environment{
 			"TEMP_TEST_VAR": EnvValue{NeedRemove: true},
@@ -89,8 +89,8 @@ func TestRunCmd(t *testing.T) {
 	})
 
 	t.Run("preserve existing environment", func(t *testing.T) {
-		os.Setenv("EXISTING_VAR", "existing_value")
-		defer os.Unsetenv("EXISTING_VAR")
+		_ = os.Setenv("EXISTING_VAR", "existing_value")
+		defer func() { _ = os.Unsetenv("EXISTING_VAR") }()
 
 		env := Environment{
 			"NEW_VAR": EnvValue{Value: "new_value"},
